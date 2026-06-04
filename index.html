@@ -1,0 +1,459 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+.app{font-family:'Nunito',sans-serif;min-height:500px;}
+.screen{display:none;padding:1.5rem 1rem 2rem;}
+.screen.active{display:block;}
+.welcome-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:2rem 1.5rem;max-width:420px;margin:0 auto;text-align:center;}
+.welcome-emoji{font-size:52px;margin-bottom:12px;}
+.welcome-title{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:var(--color-text-primary);margin-bottom:6px;}
+.welcome-sub{font-size:14px;color:var(--color-text-secondary);margin-bottom:1.5rem;line-height:1.5;}
+.name-label{font-size:13px;font-weight:700;color:var(--color-text-secondary);text-align:left;display:block;margin-bottom:6px;}
+.name-input{width:100%;padding:10px 14px;border-radius:var(--border-radius-md);border:1.5px solid #AFA9EC;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--color-text-primary);background:var(--color-background-primary);margin-bottom:1.2rem;}
+.name-input:focus{border-color:#7F77DD;}
+.mode-label{font-size:13px;font-weight:700;color:var(--color-text-secondary);text-align:left;display:block;margin-bottom:8px;}
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.2rem;}
+.mode-card{border:1.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 6px;cursor:pointer;transition:all 0.15s;background:var(--color-background-primary);}
+.mode-card:hover{background:var(--color-background-secondary);}
+.mode-card.sel{border-color:#534AB7;background:#EEEDFE;}
+.mode-card .mc-icon{font-size:20px;display:block;margin-bottom:3px;}
+.mode-card .mc-label{font-size:12px;font-weight:700;color:var(--color-text-primary);}
+.mode-card .mc-time{font-size:11px;color:var(--color-text-secondary);}
+.mode-card.sel .mc-label,.mode-card.sel .mc-time{color:#3C3489;}
+.mode-card .mc-hint{font-size:10px;font-weight:700;margin-top:2px;}
+.start-btn{width:100%;padding:13px;border-radius:24px;border:none;background:#534AB7;color:#fff;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:transform 0.1s;}
+.start-btn:hover{opacity:0.9;}
+.start-btn:active{transform:scale(0.97);}
+.start-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.hiscore-section{margin-top:1.5rem;border-top:0.5px solid var(--color-border-tertiary);padding-top:1rem;}
+.hiscore-title{font-size:12px;font-weight:700;color:var(--color-text-secondary);margin-bottom:8px;text-align:left;}
+.hiscore-list{list-style:none;}
+.hiscore-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+.hiscore-pos{font-weight:800;font-size:14px;min-width:20px;color:#534AB7;}
+.hiscore-name{flex:1;font-weight:700;color:var(--color-text-primary);}
+.hiscore-score{font-weight:800;color:#1D9E75;}
+.hiscore-meta{font-size:11px;color:var(--color-text-secondary);}
+.game-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.player-badge{display:flex;align-items:center;gap:7px;background:var(--color-background-secondary);border-radius:20px;padding:5px 12px;}
+.avatar{width:28px;height:28px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#534AB7;}
+.player-name{font-size:13px;font-weight:700;color:var(--color-text-primary);}
+.timer-wrap{flex:1;min-width:160px;}
+.timer-bar-bg{height:14px;background:var(--color-background-secondary);border-radius:8px;overflow:hidden;border:0.5px solid var(--color-border-tertiary);}
+.timer-bar-fill{height:100%;border-radius:8px;background:#1D9E75;transition:width 0.9s linear,background 0.5s;}
+.timer-bar-fill.warn{background:#BA7517;}
+.timer-bar-fill.danger{background:#E24B4A;}
+.timer-text{font-size:12px;font-weight:700;color:var(--color-text-secondary);text-align:right;margin-top:2px;}
+.score-badge{background:#EEEDFE;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:800;color:#3C3489;}
+.score-pts{font-size:11px;color:#534AB7;font-weight:700;}
+.progress-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.prog-bar-bg{flex:1;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;}
+.prog-bar-fill{height:100%;border-radius:4px;background:#1D9E75;transition:width 0.3s;}
+.prog-txt{font-size:12px;color:var(--color-text-secondary);font-weight:700;min-width:60px;text-align:right;}
+.tab-controls{display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+.tab-btn{font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;border:1.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;transition:all 0.1s;}
+.tab-btn:hover{background:var(--color-background-secondary);}
+.tab-btn.active{background:#1D9E75;color:#fff;border-color:#1D9E75;}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.mult-table{border-collapse:separate;border-spacing:3px;margin:0 auto;}
+.mult-table td,.mult-table th{text-align:center;vertical-align:middle;}
+.hcorner{width:38px;height:38px;background:transparent;}
+.hx{width:48px;height:38px;background:#534AB7;border-radius:7px;font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#fff;}
+.hy{width:38px;height:46px;background:#1D9E75;border-radius:7px;font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#fff;}
+.cfixed{width:48px;height:46px;background:#EAF3DE;border-radius:7px;font-size:14px;font-weight:700;color:#3B6D11;}
+@media(prefers-color-scheme:dark){
+  .cfixed{background:#27500A;color:#C0DD97;}
+  .hx{background:#3C3489;}
+  .hy{background:#0F6E56;}
+  .mode-card.sel{background:#3C3489;}
+  .score-badge{background:#3C3489;}
+  .avatar{background:#3C3489;color:#CECBF6;}
+}
+.cinput-wrap{width:48px;height:46px;}
+.cinput{width:100%;height:100%;border-radius:7px;border:2px solid #AFA9EC;background:var(--color-background-primary);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--color-text-primary);}
+.cinput:focus{border-color:#7F77DD;background:#EEEDFE;}
+.cinput.correct{border-color:#1D9E75;background:#E1F5EE;color:#0F6E56;pointer-events:none;}
+.cinput.wrong{border-color:#D85A30;background:#FAECE7;color:#D85A30;animation:shk 0.3s;}
+.cinput.revealed{border-color:#E24B4A;background:#FCEBEB;color:#A32D2D;pointer-events:none;}
+@keyframes shk{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.cinput.pop{animation:pop 0.25s;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.25);}100%{transform:scale(1);}}
+.game-actions{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap;}
+.act-btn{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;transition:transform 0.1s;}
+.act-btn:active{transform:scale(0.96);}
+.btn-check{background:#534AB7;color:#fff;}
+.btn-reveal{background:#D85A30;color:#fff;}
+.btn-reset{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-secondary);}
+.feedback-txt{text-align:center;font-size:14px;font-weight:700;min-height:20px;margin-top:8px;color:#1D9E75;}
+.feedback-txt.err{color:#D85A30;}
+.result-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:2rem 1.5rem;max-width:420px;margin:0 auto;text-align:center;}
+.result-emoji{font-size:56px;margin-bottom:10px;}
+.result-title{font-family:'Baloo 2',cursive;font-size:24px;font-weight:800;color:var(--color-text-primary);margin-bottom:4px;}
+.result-player{font-size:14px;color:var(--color-text-secondary);margin-bottom:1.2rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.2rem;}
+.stat-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;}
+.stat-val{font-size:22px;font-weight:800;color:var(--color-text-primary);}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);font-weight:700;}
+.new-record{background:#FAEEDA;color:#633806;border-radius:12px;padding:6px 16px;font-size:13px;font-weight:800;display:inline-block;margin-bottom:1rem;}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.res-btn{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;padding:10px 22px;border-radius:24px;border:none;cursor:pointer;transition:transform 0.1s;}
+.res-btn:active{transform:scale(0.97);}
+.btn-again{background:#534AB7;color:#fff;}
+.btn-home{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-secondary);}
+.res-leaderboard{margin-top:1.5rem;border-top:0.5px solid var(--color-border-tertiary);padding-top:1rem;text-align:left;}
+:root {
+  --color-background-primary: #fff;
+  --color-background-secondary: #f5f5f5;
+  --color-border-secondary: #d0d0d0;
+  --color-border-tertiary: #e0e0e0;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #666;
+  --border-radius-lg: 12px;
+  --border-radius-md: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1a1a1a;
+    --color-background-secondary: #2d2d2d;
+    --color-border-secondary: #404040;
+    --color-border-tertiary: #333;
+    --color-text-primary: #f5f5f5;
+    --color-text-secondary: #aaa;
+  }
+}
+</style>
+
+<div class="app" id="app">
+  <h2 class="sr-only">Juego de tablas de multiplicar con puntaje, temporizador y ranking</h2>
+
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome-card">
+      <div class="welcome-emoji">🌟</div>
+      <p class="welcome-title">¡Tablas de multiplicar!</p>
+      <p class="welcome-sub">Completa la tabla lo más rápido posible. Cada respuesta correcta suma puntos. ¡Responde rápido para ganar más!</p>
+      <label class="name-label" for="name-inp">Tu nombre</label>
+      <input class="name-input" id="name-inp" type="text" placeholder="Escribe tu nombre aquí..." maxlength="20" autocomplete="off" />
+      <span class="mode-label">Elige el nivel</span>
+      <div class="mode-grid">
+        <div class="mode-card sel" data-mode="easy" data-time="240" onclick="selectMode(this)">
+          <span class="mc-icon">🐢</span>
+          <span class="mc-label">Fácil</span>
+          <span class="mc-time">4 minutos</span>
+          <span class="mc-hint" style="color:#1D9E75"> </span>
+        </div>
+        <div class="mode-card" data-mode="medium" data-time="180" onclick="selectMode(this)">
+          <span class="mc-icon">🐇</span>
+          <span class="mc-label">Normal</span>
+          <span class="mc-time">3 minutos</span>
+          <span class="mc-hint" style="color:#BA7517"> </span>
+        </div>
+        <div class="mode-card" data-mode="hard" data-time="120" onclick="selectMode(this)">
+          <span class="mc-icon">🚀</span>
+          <span class="mc-label">Rápido</span>
+          <span class="mc-time">2 minutos</span>
+          <span class="mc-hint" style="color:#D85A30">¡Todo en blanco!</span>
+        </div>
+      </div>
+      <button class="start-btn" id="start-btn" onclick="startGame()" disabled>¡Empezar a jugar!</button>
+      <div class="hiscore-section">
+        <p class="hiscore-title">Mejores puntajes</p>
+        <ul class="hiscore-list" id="hi-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-game">
+    <div class="game-header">
+      <div class="player-badge">
+        <div class="avatar" id="g-avatar">?</div>
+        <span class="player-name" id="g-name">Jugador</span>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-bar-bg"><div class="timer-bar-fill" id="timer-bar"></div></div>
+        <div class="timer-text" id="timer-txt">4:00</div>
+      </div>
+      <div class="score-badge"><span id="g-score">0</span> <span class="score-pts">pts</span></div>
+    </div>
+    <div class="progress-row">
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-fill"></div></div>
+      <span class="prog-txt" id="prog-txt">0 / 0</span>
+    </div>
+    <div class="tab-controls" id="tab-ctrl"></div>
+    <div class="tbl-scroll"><table class="mult-table" id="mult-table"></table></div>
+    <div class="game-actions">
+      <button class="act-btn btn-check" onclick="checkAll()">✓ Verificar</button>
+      <button class="act-btn btn-reveal" onclick="revealAll()">👁 Ver respuestas</button>
+      <button class="act-btn btn-reset" onclick="resetInputs()">↻ Reiniciar</button>
+    </div>
+    <p class="feedback-txt" id="feedback"></p>
+  </div>
+
+  <div class="screen" id="screen-result">
+    <div class="result-card">
+      <div class="result-emoji" id="res-emoji">🎉</div>
+      <p class="result-title" id="res-title">¡Excelente!</p>
+      <p class="result-player" id="res-player"></p>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val" id="res-score">0</div><div class="stat-lbl">puntos</div></div>
+        <div class="stat-box"><div class="stat-val" id="res-time">0s</div><div class="stat-lbl">tiempo usado</div></div>
+        <div class="stat-box"><div class="stat-val" id="res-acc">0%</div><div class="stat-lbl">precisión</div></div>
+      </div>
+      <div id="res-record-badge" style="display:none"><span class="new-record">🏆 ¡Nuevo récord personal!</span></div>
+      <div class="res-btns">
+        <button class="res-btn btn-again" onclick="playAgain()">↻ Jugar de nuevo</button>
+        <button class="res-btn btn-home" onclick="goHome()">🏠 Inicio</button>
+      </div>
+      <div class="res-leaderboard">
+        <p class="hiscore-title">Tabla de puntajes</p>
+        <ul class="hiscore-list" id="res-hi-list"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLS=[1,2,3,4,5],ROWS=[1,2,3,4,5,6,7,8,9,10];
+let playerName='',totalTime=240,timeLeft=240,timerInterval=null;
+let currentMode='all',gameScore=0,comboCount=0,totalCorrect=0,totalAttempts=0;
+let gameActive=false,startTs=0,selectedDifficulty='easy';
+let scores=[];
+
+function loadScores(){try{scores=JSON.parse(localStorage.getItem('multScores3')||'[]');}catch(e){scores=[];}}
+function saveScores(){try{localStorage.setItem('multScores3',JSON.stringify(scores.slice(0,10)));}catch(e){}}
+function renderHiList(el){
+  loadScores();el.innerHTML='';
+  if(!scores.length){el.innerHTML='<li style="font-size:12px;color:var(--color-text-secondary);padding:6px 0">Aún no hay puntajes guardados.</li>';return;}
+  const medals=['🥇','🥈','🥉'];
+  scores.slice(0,5).forEach((s,i)=>{
+    const li=document.createElement('li');li.className='hiscore-row';
+    li.innerHTML=`<span class="hiscore-pos">${medals[i]||i+1}</span><span class="hiscore-name">${s.name}</span><span class="hiscore-score">${s.score} pts</span><span class="hiscore-meta">${s.mode} · ${s.date}</span>`;
+    el.appendChild(li);
+  });
+}
+
+document.getElementById('name-inp').addEventListener('input',function(){
+  document.getElementById('start-btn').disabled=this.value.trim().length<2;
+});
+document.getElementById('name-inp').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&this.value.trim().length>=2)startGame();
+});
+
+function selectMode(el){
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  totalTime=parseInt(el.dataset.time);
+  selectedDifficulty=el.dataset.mode;
+}
+
+function getModeName(){
+  const sel=document.querySelector('.mode-card.sel');
+  return sel?sel.querySelector('.mc-label').textContent:'Fácil';
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startGame(){
+  playerName=document.getElementById('name-inp').value.trim();
+  if(!playerName)return;
+  const sel=document.querySelector('.mode-card.sel');
+  totalTime=sel?parseInt(sel.dataset.time):240;
+  selectedDifficulty=sel?sel.dataset.mode:'easy';
+  timeLeft=totalTime;gameScore=0;comboCount=0;totalCorrect=0;totalAttempts=0;
+  document.getElementById('g-name').textContent=playerName;
+  document.getElementById('g-avatar').textContent=playerName.slice(0,2).toUpperCase();
+  document.getElementById('g-score').textContent='0';
+  currentMode='all';
+  buildTabControls();buildTable();
+  showScreen('screen-game');
+  gameActive=true;startTs=Date.now();
+  updateTimerDisplay();
+  timerInterval=setInterval(tickTimer,1000);
+}
+
+function tickTimer(){
+  if(!gameActive)return;
+  timeLeft--;updateTimerDisplay();
+  if(timeLeft<=0){timeLeft=0;updateTimerDisplay();endGame(false);}
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('timer-txt').textContent=m+':'+(s<10?'0':'')+s;
+  const pct=totalTime>0?timeLeft/totalTime*100:0;
+  const bar=document.getElementById('timer-bar');
+  bar.style.width=pct+'%';
+  bar.className='timer-bar-fill'+(pct<20?' danger':pct<40?' warn':'');
+}
+
+function buildTabControls(){
+  const c=document.getElementById('tab-ctrl');c.innerHTML='';
+  [['all','Todas'],['1','× 1'],['2','× 2'],['3','× 3'],['4','× 4'],['5','× 5']].forEach(([m,l])=>{
+    const b=document.createElement('button');
+    b.className='tab-btn'+(m===currentMode?' active':'');
+    b.textContent=l;
+    b.onclick=()=>{currentMode=m;document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');buildTable();setFeedback('');};
+    c.appendChild(b);
+  });
+}
+
+function getActiveCols(){return currentMode==='all'?COLS:[parseInt(currentMode)];}
+
+function shouldBeBlank(col,row){
+  if(selectedDifficulty==='hard')return true;
+  return ((col*7+row*13)%5)<3;
+}
+
+function buildTable(){
+  const cols=getActiveCols(),tbl=document.getElementById('mult-table');
+  tbl.innerHTML='';
+  const thead=document.createElement('thead'),hr=document.createElement('tr');
+  const co=document.createElement('th');co.className='hcorner';co.innerHTML='<span style="font-size:18px">×</span>';hr.appendChild(co);
+  cols.forEach(c=>{const th=document.createElement('th');th.className='hx';th.textContent=c;hr.appendChild(th);});
+  thead.appendChild(hr);tbl.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  ROWS.forEach(row=>{
+    const tr=document.createElement('tr');
+    const yh=document.createElement('th');yh.className='hy';yh.textContent=row;tr.appendChild(yh);
+    cols.forEach(col=>{
+      const td=document.createElement('td'),res=col*row;
+      if(shouldBeBlank(col,row)){
+        const w=document.createElement('div');w.className='cinput-wrap';
+        const inp=document.createElement('input');inp.type='number';inp.min=0;inp.max=100;
+        inp.className='cinput';inp.dataset.answer=res;
+        inp.setAttribute('inputmode','numeric');
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter'){checkSingle(inp);moveNext(inp);}});
+        inp.addEventListener('input',()=>{
+          inp.classList.remove('wrong');
+          if(inp.value.trim()!==''){
+            if(parseInt(inp.value)===parseInt(inp.dataset.answer)){
+              inp.classList.add('correct','pop');
+              totalCorrect++;totalAttempts++;
+              addScore(inp);updateProgress();checkWin();
+            }
+          }
+        });
+        w.appendChild(inp);td.appendChild(w);
+      }else{td.className='cfixed';td.textContent=res;}
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  updateProgress();
+}
+
+function addScore(inp){
+  const timeBonus=Math.round(timeLeft/totalTime*30);
+  const comboBonus=comboCount>=3?10:comboCount>=2?5:0;
+  const pts=10+timeBonus+comboBonus;
+  gameScore+=pts;comboCount++;
+  document.getElementById('g-score').textContent=gameScore;
+  let msg='✓ +'+pts+' pts';
+  if(comboCount>=3)msg+=' 🔥 Combo x'+comboCount+'!';
+  setFeedback(msg,false);
+  setTimeout(()=>inp.classList.remove('pop'),250);
+}
+
+function moveNext(inp){
+  const all=Array.from(document.querySelectorAll('.cinput:not(.correct):not(.revealed)'));
+  const i=all.indexOf(inp);if(i>=0&&i<all.length-1)all[i+1].focus();
+}
+
+function checkSingle(inp){
+  if(inp.classList.contains('correct')||inp.classList.contains('revealed'))return;
+  if(inp.value.trim()==='')return;
+  if(parseInt(inp.value)===parseInt(inp.dataset.answer)){inp.classList.add('correct');}
+  else{totalAttempts++;comboCount=0;inp.classList.add('wrong');setTimeout(()=>{inp.classList.remove('wrong');inp.value='';},600);}
+}
+
+function checkAll(){
+  document.querySelectorAll('.cinput:not(.correct):not(.revealed)').forEach(inp=>{
+    if(inp.value.trim()==='')return;
+    if(parseInt(inp.value)===parseInt(inp.dataset.answer)){inp.classList.add('correct');totalCorrect++;totalAttempts++;}
+    else{totalAttempts++;comboCount=0;inp.classList.add('wrong');setTimeout(()=>{inp.classList.remove('wrong');inp.value='';},700);}
+  });
+  updateProgress();checkWin();
+}
+
+function revealAll(){
+  document.querySelectorAll('.cinput:not(.correct)').forEach(inp=>{inp.value=inp.dataset.answer;inp.classList.add('revealed');});
+  updateProgress();setFeedback('Respuestas mostradas. ¡La próxima vez lo haces mejor! 📚',true);
+  endGame(false);
+}
+
+function resetInputs(){
+  document.querySelectorAll('.cinput').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong','revealed','pop');});
+  gameScore=0;comboCount=0;totalCorrect=0;totalAttempts=0;
+  document.getElementById('g-score').textContent='0';
+  updateProgress();setFeedback('');
+}
+
+function updateProgress(){
+  const all=document.querySelectorAll('.cinput').length;
+  const done=document.querySelectorAll('.cinput.correct,.cinput.revealed').length;
+  const pct=all?Math.round(done/all*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-txt').textContent=done+' / '+all;
+}
+
+function checkWin(){
+  const all=document.querySelectorAll('.cinput').length;
+  const correct=document.querySelectorAll('.cinput.correct').length;
+  if(all>0&&correct===all){setFeedback('¡Completaste toda la tabla! 🎉',false);endGame(true);}
+}
+
+function setFeedback(msg,isErr=false){
+  const el=document.getElementById('feedback');
+  el.textContent=msg;el.className='feedback-txt'+(isErr?' err':'');
+}
+
+function endGame(won){
+  if(!gameActive)return;
+  gameActive=false;clearInterval(timerInterval);
+  const timeUsed=Math.round((Date.now()-startTs)/1000);
+  const acc=totalAttempts>0?Math.round(totalCorrect/totalAttempts*100):0;
+  const finalScore=won?Math.round(gameScore+(timeLeft*2)):gameScore;
+  loadScores();
+  const personal=scores.filter(s=>s.name===playerName&&s.mode===getModeName());
+  const prevBest=personal.length?Math.max(...personal.map(s=>s.score)):0;
+  const isRecord=finalScore>prevBest&&totalCorrect>0;
+  scores.push({name:playerName,score:finalScore,mode:getModeName(),timeUsed,acc,date:new Date().toLocaleDateString('es-CL')});
+  scores.sort((a,b)=>b.score-a.score);
+  saveScores();
+  setTimeout(()=>showResult(won,finalScore,timeUsed,acc,isRecord),600);
+}
+
+function showResult(won,finalScore,timeUsed,acc,isRecord){
+  document.getElementById('res-emoji').textContent=won?'🏆':acc>=70?'👏':'💪';
+  document.getElementById('res-title').textContent=won?'¡Felicitaciones!':acc>=70?'¡Muy bien hecho!':'¡Sigue practicando!';
+  document.getElementById('res-player').textContent=playerName+' · '+getModeName();
+  document.getElementById('res-score').textContent=finalScore;
+  document.getElementById('res-time').textContent=timeUsed+'s';
+  document.getElementById('res-acc').textContent=acc+'%';
+  document.getElementById('res-record-badge').style.display=isRecord?'block':'none';
+  renderHiList(document.getElementById('res-hi-list'));
+  showScreen('screen-result');
+}
+
+function playAgain(){
+  clearInterval(timerInterval);
+  timeLeft=totalTime;gameScore=0;comboCount=0;totalCorrect=0;totalAttempts=0;
+  document.getElementById('g-score').textContent='0';
+  currentMode='all';buildTabControls();buildTable();
+  showScreen('screen-game');
+  gameActive=true;startTs=Date.now();updateTimerDisplay();
+  timerInterval=setInterval(tickTimer,1000);
+}
+
+function goHome(){
+  clearInterval(timerInterval);gameActive=false;
+  renderHiList(document.getElementById('hi-list'));
+  showScreen('screen-welcome');
+}
+
+loadScores();
+renderHiList(document.getElementById('hi-list'));
+</script>
